@@ -19,3 +19,10 @@ module bastion 'bastion.bicep' = {
     location: location
   }
 }
+
+module lb 'load-balancer.bicep' = {
+  name: 'loadbalancer'
+  params: {
+    location: location
+  }
+}
