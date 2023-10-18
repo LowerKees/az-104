@@ -36,3 +36,4 @@ resource network 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 }
 
 output bastionSubnet object = network.properties.subnets[1]
+output vmsSubnet object = network.properties.subnets[0]

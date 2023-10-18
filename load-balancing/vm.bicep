@@ -1,8 +1,46 @@
+param loadBalancerName string
 param location string = resourceGroup().location
+@description('Name of the load balancer pool containing the compute resources')
+param poolName string
+@description('Name of the load balancer pool used for outbound connectivity')
+param poolOutName string
 param vmName string = 'vm'
+param vmsSubnet object
 
-var start = 0
-var end = 1
+var start = 1
+var end = 2
+
+resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = [
+  name: 'nic-${vmName}-00${i}'
+  location: location
+  tags: {
+    delete: 'yes'
+    delete_on: '01-01-2024'
+  }
+  properties: {
+    enableIPForwarding: false
+    ipConfigurations: [
+      {
+        name: 'ipconfig'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: vmsSubnet.id
+          }
+          loadBalancerBackendAddressPools :[
+            {
+
+            }
+            {
+
+            }
+          ]
+        }
+        
+      }
+    ]
+  }
+]
 
 resource vm 'Microsoft.Compute/virtualMachines@2023-07-01' = [for i in range(start, end): {
   name: 'vm-${vmName}-00${i}'

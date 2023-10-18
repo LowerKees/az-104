@@ -26,3 +26,13 @@ module lb 'load-balancer.bicep' = {
     location: location
   }
 }
+
+module vms 'vm.bicep' = {
+  name: 'virtualmachines'
+  params: {
+    vmsSubnet: network.outputs.vmsSubnet
+  }
+  dependsOn:[
+    lb
+  ]
+}

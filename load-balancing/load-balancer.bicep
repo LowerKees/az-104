@@ -137,3 +137,6 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-05-01' = {
   }
 }
     
+output loadBalancerName string = loadBalancer.name
+output poolName string = poolName
+output poolOutName string = poolOutName
