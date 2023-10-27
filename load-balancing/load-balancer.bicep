@@ -99,7 +99,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-05-01' = {
           loadDistribution: 'Default'
           disableOutboundSnat: true
           probe: {
-            id: null
+            id: resourceId('Microsoft.Network/loadBalancers/probes', lbName, poolProbeName)
           }
         }
       }

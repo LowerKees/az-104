@@ -30,6 +30,11 @@ module lb 'load-balancer.bicep' = {
 module vms 'vm.bicep' = {
   name: 'virtualmachines'
   params: {
+    loadBalancerName: lb.outputs.loadBalancerName
+    location: location
+    nsgVmSubnet: network.outputs.nsgVmSubnet
+    poolName: lb.outputs.poolName
+    poolOutName: lb.outputs.poolOutName
     vmsSubnet: network.outputs.vmsSubnet
   }
   dependsOn:[

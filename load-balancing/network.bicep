@@ -23,6 +23,9 @@ resource network 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         name: 'vms'
         properties: {
           addressPrefix: '10.0.0.0/24'
+          networkSecurityGroup: {
+            id: nsgVms.id
+          }
         }
       }
       {
@@ -35,5 +38,32 @@ resource network 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
+resource nsgVms 'Microsoft.Network/networkSecurityGroups@2023-05-01' = {
+  name: 'nsg-vmssn-az104-001'
+  location: location
+  tags: {
+    delete: 'yes'
+    delete_on: '01-01-2024'
+  }
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowHTTPInbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '80'
+          sourceAddressPrefix: 'Internet'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 100
+          direction: 'Inbound'
+        }
+      }
+    ]
+  }
+}
+
 output bastionSubnet object = network.properties.subnets[1]
 output vmsSubnet object = network.properties.subnets[0]
+output nsgVmSubnet object = nsgVms
