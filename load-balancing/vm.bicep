@@ -72,9 +72,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-07-01' = [for i in range(sta
       osDisk: {
         createOption: 'FromImage'
         caching: 'ReadOnly'
-        diffDiskSettings: {
-          option: 'Local'
-          placement: 'ResourceDisk'
+        managedDisk: {
+          storageAccountType: 'Standard_LRS'
         }
       }
     }
