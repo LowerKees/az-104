@@ -66,4 +66,3 @@ resource nsgVms 'Microsoft.Network/networkSecurityGroups@2023-05-01' = {
 
 output bastionSubnet object = network.properties.subnets[1]
 output vmsSubnet object = network.properties.subnets[0]
-output nsgVmSubnet object = nsgVms

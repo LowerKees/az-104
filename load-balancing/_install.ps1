@@ -1,22 +1,30 @@
+. $PSScriptRoot/_functions.ps1
+
 $RESOURCEGROUPNAME = "rg-lb-104-001"
+$TAGS = @{
+    "Project"        = "104"
+    "Delete"         = "Yes"
+    "DeletionPolicy" = "Overnight"
+}
 
 $params = @{
     Name        = $RESOURCEGROUPNAME
     Location    = "Germany West Central"
     ErrorAction = "SilentlyContinue"
-    Tag         = @{
-        "Project"        = "104"
-        "Delete"         = "Yes"
-        "DeletionPolicy" = "Overnight"
-    }
+    Tag         = $TAGS
 }
 
 if (!(Get-AzResourceGroup @params)) { New-AzResourceGroup @params }
+
+$vmUsernames = @{"vm1" = "nimda001"; "vm2" = "nimda002" }
+$vmPasswords = @{"vm1" = (New-VmPassword); "vm2" = (New-VmPassword) }
 
 $params = @{
     ResourceGroupName = $RESOURCEGROUPNAME
     Mode              = "Incremental"
     TemplateFile      = "$PSScriptRoot/main.bicep"
+    vmUsernames       = $vmUsernames
+    vmPasswords       = $vmPasswords
 }
 
-New-AzResourceGroupDeployment @params
+New-AzResourceGroupDeployment @params -vmUsernames $vmUsernames -vmPasswords $vmPasswords
