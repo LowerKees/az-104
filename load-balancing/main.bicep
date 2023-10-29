@@ -1,4 +1,9 @@
+
 param location string = resourceGroup().location
+@secure()
+param vmPasswords object
+@secure()
+param vmUsernames object
 
 targetScope = 'resourceGroup'
 
@@ -30,14 +35,16 @@ module lb 'load-balancer.bicep' = {
 module vms 'vm.bicep' = {
   name: 'virtualmachines'
   params: {
+    adminPasswords: vmPasswords
+    adminUsernames: vmUsernames
     loadBalancerName: lb.outputs.loadBalancerName
     location: location
-    nsgVmSubnet: network.outputs.nsgVmSubnet
     poolName: lb.outputs.poolName
     poolOutName: lb.outputs.poolOutName
     vmsSubnet: network.outputs.vmsSubnet
   }
   dependsOn:[
     lb
+    network
   ]
 }

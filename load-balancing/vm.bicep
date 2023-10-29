@@ -1,7 +1,9 @@
+@secure()
+param adminPasswords object
+@secure()
+param adminUsernames object
 param loadBalancerName string
 param location string = resourceGroup().location
-@description('The NSG of the subnet that has the VMs mounted in it.')
-param nsgVmSubnet object
 @description('Name of the load balancer pool containing the compute resources')
 param poolName string
 @description('Name of the load balancer pool used for outbound connectivity')
@@ -40,9 +42,6 @@ resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = [for i in range(
         }
       }
     ]
-    networkSecurityGroup: {
-      id: nsgVmSubnet.id
-    }
   }
 }]
 
@@ -56,9 +55,53 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-07-01' = [for i in range(sta
   identity: {
     type: 'SystemAssigned'
   }
-  properties: {}
+  dependsOn: [
+    nic
+  ]
+  properties: {
+    hardwareProfile: {
+      vmSize: 'Standard_B2s'
+    }
+    storageProfile: {
+      imageReference: {
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-jammy'
+        sku: '22_04-lts-gen2'
+        version: 'latest'
+      }
+      osDisk: {
+        createOption: 'FromImage'
+        caching: 'ReadOnly'
+        managedDisk: {
+          storageAccountType: 'Standard_LRS'
+        }
+      }
+    }
+    networkProfile: {
+      networkInterfaces: [
+        {
+          id: nic[i-1].id
+        }
+      ]
+    }
+    osProfile: {
+      computerName: 'mountain-${i}'
+      allowExtensionOperations: true
+      adminPassword: adminPasswords['vm${i}']
+      adminUsername: adminUsernames['vm${i}']
+      linuxConfiguration: {
+        patchSettings: {
+          assessmentMode: 'AutomaticByPlatform'
+          patchMode: 'AutomaticByPlatform'
+          automaticByPlatformSettings: {
+            rebootSetting: 'IfRequired'
+          }
+        }
+      }
+    }
+  }
 }]
 
 output vmName array = [for i in range(start, end): {
-  vmName: vm[i].name
+  vmName: vm[i-1].name
 }]
