@@ -60,6 +60,19 @@ resource nsgVms 'Microsoft.Network/networkSecurityGroups@2023-05-01' = {
           direction: 'Inbound'
         }
       }
+      {
+        name: 'AllowSSHInbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '22'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 101
+          direction: 'Inbound'
+        }
+      }
     ]
   }
 }
