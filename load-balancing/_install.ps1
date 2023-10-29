@@ -1,4 +1,4 @@
-. $PSScriptRoot/_functions.ps1
+. $PSScriptRoot/../_functions.ps1
 
 $RESOURCEGROUPNAME = "rg-lb-104-001"
 $TAGS = @{
