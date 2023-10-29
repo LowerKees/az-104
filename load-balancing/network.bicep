@@ -90,28 +90,118 @@ resource nsgBastion 'Microsoft.Network/networkSecurityGroups@2023-05-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowHTTPSInbound'
+        name: 'AllowHttpsInBound'
         properties: {
-          protocol: '*'
+          protocol: 'Tcp'
           sourcePortRange: '*'
-          destinationPortRange: '443'
           sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: 'VirtualNetwork'
+          destinationPortRange: 443
+          destinationAddressPrefix: '*'
           access: 'Allow'
           priority: 100
           direction: 'Inbound'
         }
       }
       {
-        name: 'AllowSSHOutbound'
+        name: 'AllowGatewayManagerInBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'GatewayManager'
+          destinationPortRange: 443
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 110
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowLoadBalancerInBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'AzureLoadBalancer'
+          destinationPortRange: 443
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 120
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowBastionHostCommunicationInBound'
         properties: {
           protocol: '*'
           sourcePortRange: '*'
-          destinationPortRange: '22'
           sourceAddressPrefix: 'VirtualNetwork'
+          destinationPortRanges: [
+            8080
+            5701
+          ]
           destinationAddressPrefix: 'VirtualNetwork'
           access: 'Allow'
-          priority: 101
+          priority: 130
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowSshRdpOutBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRanges: [
+            22
+            3389
+          ]
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 100
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'AllowAzureCloudCommunicationOutBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRange: 443
+          destinationAddressPrefix: 'AzureCloud'
+          access: 'Allow'
+          priority: 110
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'AllowBastionHostCommunicationOutBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationPortRanges: [
+            8080
+            5701
+          ]
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 120
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'AllowGetSessionInformationOutBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'Internet'
+          destinationPortRanges: [
+            80
+            443
+          ]
+          access: 'Allow'
+          priority: 130
           direction: 'Outbound'
         }
       }
