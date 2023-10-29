@@ -60,7 +60,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-07-01' = [for i in range(sta
   ]
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_B1s'
+      vmSize: 'Standard_B2s'
     }
     storageProfile: {
       imageReference: {
@@ -80,7 +80,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-07-01' = [for i in range(sta
     networkProfile: {
       networkInterfaces: [
         {
-          id: nic[i].id
+          id: nic[i-1].id
         }
       ]
     }
@@ -103,5 +103,5 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-07-01' = [for i in range(sta
 }]
 
 output vmName array = [for i in range(start, end): {
-  vmName: vm[i].name
+  vmName: vm[i-1].name
 }]
