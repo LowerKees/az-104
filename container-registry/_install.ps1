@@ -11,7 +11,7 @@ if (!(Get-AzResourceGroup @params)) {
         "Project"        = "104"
         "Delete"         = "Yes"
         "DeletionPolicy" = "Overnight"
-    } 
+    } @params
 }
 
 $params = @{
