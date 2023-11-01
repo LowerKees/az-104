@@ -4,6 +4,8 @@ param location string = resourceGroup().location
 param vmPasswords object
 @secure()
 param vmUsernames object
+@description('Object id of a single user that gets key vault access through policy')
+param userObjectId string
 
 targetScope = 'resourceGroup'
 
@@ -47,4 +49,14 @@ module vms 'vm.bicep' = {
     lb
     network
   ]
+}
+
+module keyvault 'keyvault.bicep' = {
+  name: 'keyvault'
+  params: {
+    adminPasswords: vmPasswords
+    adminUsernames: vmUsernames
+    location: location
+    userObjectId: userObjectId
+  }
 }
