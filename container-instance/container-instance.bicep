@@ -115,6 +115,10 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2021-09-01'
               cpu: cpuCores
               memoryInGB: memoryInGb
             }
+            limits: {
+              cpu: (cpuCores + 1)
+              memoryInGB: (memoryInGb + 1)
+            }
           }
         }
       }
